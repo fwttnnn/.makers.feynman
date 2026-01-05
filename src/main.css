@@ -18,3 +18,7 @@ html, body {
 a {
   text-decoration: underline wavy;
 }
+
+button {
+  cursor: pointer;
+}

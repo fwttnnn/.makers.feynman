@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react"
+import { useLiveQuery } from "dexie-react-hooks"
 
 import db from "@/database"
 import type { Task as DBTask,
@@ -15,39 +15,25 @@ export type Label = Pick<DBLabel, "id" | "name"> & { theme: Pick<DBTheme, "bg" |
  * 31.1 (custom hooks)
  */
 export default (): Array<Task> => {
-  /**
-   * 9.2 (props/state)
-   */ 
-  const [tasks, setTasks] = useState<Array<Task>>([])
+  const tasks: DBTask[] = useLiveQuery(() => db.tasks.toArray(), []) ?? []
+  const labels: DBLabel[] = useLiveQuery(() => db.labels.toArray(), []) ?? []
+  const themes: DBTheme[] = useLiveQuery(() => db.themes.toArray(), []) ?? []
 
-  /**
-   * 12.1 (lifecycle/hooks)
-   */
-  useEffect(() => {
-    (async () => {
-      const labels = await db.labels.toArray()
-      const themes = await db.themes.toArray()
-
-      setTasks((await db.tasks.toArray())
-                .map((task: DBTask) => {
-                  return {
-                    ...task,
-                    labels: labels.filter((l: DBLabel) => l.taskId === task.id)
-                                  .map((l: DBLabel) => {
-                                    const theme = themes.find((t: DBTheme) => l.themeId ===  t.id)!!
-                                    return {
-                                      id: l.id,
-                                      name: l.name,
-                                      theme: {
-                                        bg: theme.bg,
-                                        fg: theme.fg,
-                                      },
-                                    }
-                                  }),
-                  }
-                }))
-    })()
-  }, [])
-
-  return tasks
+  return tasks.map((task: DBTask) => {
+    return {
+      ...task,
+      labels: labels.filter((l) => l.taskId === task.id)
+        .map((l) => {
+          const theme = themes.find((t) => t.id === l.themeId)!
+          return {
+            id: l.id,
+            name: l.name,
+            theme: {
+              bg: theme.bg,
+              fg: theme.fg,
+            },
+          }
+        })
+    }
+  })
 }
