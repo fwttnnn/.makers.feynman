@@ -1,7 +1,11 @@
+import Layout from "@/components/layouts"
+
 export default () => {
   return (
     <>
-      <p>hi</p>
+      <Layout>
+        <p>hi</p>
+      </Layout>
     </>
   )
 }
