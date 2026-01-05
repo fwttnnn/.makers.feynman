@@ -25,7 +25,7 @@ export const Toolbar = () => {
 }
 
 /**
- * 9.2 (props)
+ * 9.2 (props/state)
  */ 
 export const List = ({ tasks }: { tasks: Array<Task> }) => {
   return (

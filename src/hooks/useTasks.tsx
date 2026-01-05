@@ -16,8 +16,8 @@ export type Label = Pick<DBLabel, "id" | "name"> & { theme: Pick<DBTheme, "bg" |
  */
 export default (): Array<Task> => {
   /**
-   * 12.1 (lifecycle/hooks)
-   */
+   * 9.2 (props/state)
+   */ 
   const [tasks, setTasks] = useState<Array<Task>>([])
 
   /**
