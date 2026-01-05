@@ -1,7 +1,7 @@
 const Header = () => {
   return (
     <header>
-      <span>.makers.feyman (to-do list)</span>
+      <span>.makers.feynman (to-do list)</span>
     </header>
   )
 }
@@ -25,6 +25,9 @@ export default ({ children }: { children: React.ReactNode }) => {
       <main
         className="my-4"
       >
+        {/**
+         * 17.4 (HOC) ver. modern
+         */}
         {children}
       </main>
       <Footer />

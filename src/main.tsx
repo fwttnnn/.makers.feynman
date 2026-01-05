@@ -2,10 +2,17 @@ import { StrictMode } from "react"
 import { createRoot } from "react-dom/client"
 
 import "@/main.css"
-import App from "@/App"
 
+import Layout from "@/components/layouts"
+import Task from "@/components/Task"
+
+/**
+  * 17.4 (HOC) from React itself.
+  */
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
-    <App />
+    <Layout>
+      <Task />
+    </Layout>
   </StrictMode>,
 )

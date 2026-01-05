@@ -1,71 +1,52 @@
-export type Props = {
-  id: string,
-}
+import useTasks from "@/hooks/useTasks"
+import type { Label, Task } from "@/hooks/useTasks"
 
-/**
- * 9.2 (props)
- */
-export default ({ id }: Props) => {
-  const title = "React.js & Vite"
-  const tasks = [
-    {
-      instruction: "do x",
-      status: "done", // TODO: enum
-    },
-    {
-      instruction: "do y",
-      status: "done", // TODO: enum
-    },
-    {
-      instruction: "do z",
-      status: "on-going", // TODO: enum
-    }
-  ]
-  const labels = ["Web", "Learn"]
-
-  labels.sort()
+export default () => {
+  /**
+   * 31.1 (hooks)
+   */
+  const tasks = useTasks()
+  if (!tasks) return <></>
 
   return (
-    <div
-      className="border p-1.5"
-    >
-      <div
-        className="flex items-center justify-between gap-2"
-      >
-        <div
-          className="flex gap-2"
-        >
-          <div>
-            <span>{title}</span>
-          </div>
-        </div>
-        <div
-          className="flex gap-2"
+    <ul>
+      {tasks.map((task: Task) => (
+        <li
+          className="py-1.5 my-2"
         >
           <div
-            className="flex gap-2 mx-1"
+            className="flex items-center justify-between gap-2"
           >
-            {labels.map((label: string) => (
-              <div key={`--label-${id}`}>
-                <span
-                  className="bg-[#ffbd17] text-black rounded-full px-2 py-1"
-                >
-                  {label[0].toUpperCase()}
-                </span>
-              </div>
-            ))}
-          </div>
-          <div
-            className="flex gap-2"
-          >
-            <span
-              className="text-[#9af5b7]"
+            <div
+              className="flex gap-2"
             >
-              {`${tasks.filter((t) => t.status === "done").length}/${tasks.length}`}
-            </span>
+              <div>
+                <span>{task.title}</span>
+              </div>
+            </div>
+            <div
+              className="flex gap-2"
+            >
+              <div
+                className="flex gap-2 mx-1"
+              >
+                {task.labels.map((label: Label) => (
+                  <div key={`--label-${label.id}`}>
+                    <span
+                      title={label.name}
+                      style={{ background: label.theme.bg,
+                               color: label.theme.fg, }}
+                      className="rounded-full px-2 py-1"
+                    >
+                      {label.name[0].toUpperCase()}
+                    </span>
+                  </div>
+                ))}
+              </div>
+            </div>
           </div>
-        </div>
-      </div>
-    </div>
+        </li>
+      ))}
+    </ul>
   )
 }
