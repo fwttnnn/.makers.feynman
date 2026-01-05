@@ -1,5 +1,5 @@
 /**
- * 26.4
+ * 26.4 (tailwind)
  */
 @import "tailwindcss";
 
@@ -13,4 +13,8 @@ html, body {
   max-width: 680px;
   margin: 0px auto;
   padding: 20px 30px;
+}
+
+a {
+  text-decoration: underline wavy;
 }
