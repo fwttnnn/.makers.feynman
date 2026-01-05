@@ -1,3 +1,8 @@
+/**
+ * 26.4
+ */
+@import "tailwindcss";
+
 html, body {
   font-family: Arial, Helvetica, sans-serif;
   background-color: black;
@@ -7,5 +12,5 @@ html, body {
 #root {
   max-width: 680px;
   margin: 0px auto;
-  padding: 0px 30px;
+  padding: 20px 30px;
 }

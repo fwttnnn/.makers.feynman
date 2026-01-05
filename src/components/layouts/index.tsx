@@ -1,5 +1,3 @@
-import "@/components/layouts/index.css"
-
 const Header = () => {
   return (
     <header>
@@ -11,19 +9,22 @@ const Header = () => {
 const Footer = () => {
   return (
     <footer>
-      © 2026 fattan
+      {/* © 2026 fattan */}
     </footer>
   )
 }
 
 /**
  * 9.1 (functional)
+ * 9.2 (props)
  */ 
 export default ({ children }: { children: React.ReactNode }) => {
   return (
     <>
       <Header />
-      <main>
+      <main
+        className="my-4"
+      >
         {children}
       </main>
       <Footer />
