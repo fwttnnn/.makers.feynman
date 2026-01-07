@@ -7,8 +7,12 @@ import { BrowserRouter, Routes, Route } from "react-router-dom"
  */
 import "@/main.css"
 
-import Layout from "@/components/layouts"
+import Layout from "@/components/Layouts"
 import Task from "@/components/Task"
+
+import Login from "@/components/Auth/Login"
+import Logout from "@/components/Auth/Logout"
+import Auth from "@/contexts/Auth"
 
 /**
  * 17.4 (HOC) from React itself.
@@ -17,28 +21,31 @@ createRoot(document.getElementById("root")!).render(
   <StrictMode>
     {/**
       * 12.4 (React Router)
+      * 17.1 (Context API)
       */}
-    <BrowserRouter>
-      <Routes>
-        <Route
-          path={"/"}
-          element={
-            <Layout>
-              <Task />
-            </Layout>
-          }
-        />
-        <Route
-          path={"*"}
-          element={
-            <Layout>
-              <p>
-                Oops! the page you are looking for is not found. <a href="/">Go back!</a>
-              </p>
-            </Layout>
-          }
-        />
-      </Routes>
-    </BrowserRouter>
+    <Auth.Provider>
+      <BrowserRouter>
+        <Routes>
+          <Route
+            path={"/"}
+            element={
+              <Layout>
+                <Task />
+              </Layout>
+            }
+          />
+          <Route
+            path={"*"}
+            element={
+              <Layout>
+                <p>
+                  Oops! the page you are looking for is not found. <a href="/">Go back!</a>
+                </p>
+              </Layout>
+            }
+          />
+        </Routes>
+      </BrowserRouter>
+    </Auth.Provider>
   </StrictMode>,
 )

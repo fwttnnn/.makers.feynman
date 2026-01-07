@@ -1,7 +1,33 @@
+import useAuth from "@/hooks/useAuth"
+
+import Login from "@/components/Auth/Login"
+import Logout from "@/components/Auth/Logout"
+
 const Header = () => {
+  const {user} = useAuth()
+
   return (
     <header>
-      <span>.makers.feynman (to-do list)</span>
+      <div>
+        <span>.makers.feynman (to-do list)</span>
+      </div>
+      {/**
+        * 12.2 (conditional rendering & lists)
+        */}
+      {user
+        && (
+          <div>
+            <span>welcome back {user?.name.first}!</span>
+          </div>
+        )}
+      <div>
+        {/**
+          * 12.2 (conditional rendering & lists)
+          */}
+        {user
+          ? <Logout/>
+          : <Login />}
+      </div>
     </header>
   )
 }

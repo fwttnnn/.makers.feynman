@@ -1,4 +1,5 @@
 import useTasks from "@/hooks/useTasks"
+import useAuth from "@/hooks/useAuth";
 import type { Label, Task } from "@/hooks/useTasks"
 
 import { useLayoutEffect, useRef } from "react";
@@ -14,6 +15,12 @@ export default () => {
    * 31.1 (custom hooks)
    */
   const tasks = useTasks()
+  const {user} = useAuth()
+
+  /**
+   * 12.2 (conditional rendering & lists)
+   */
+  if (!user) return <></>
 
   return (
     <>
@@ -51,7 +58,6 @@ const Item = ({ task }: { task: Task }) => {
     }, root)
 
     return () => {
-      console.log("rev")
       ctx.revert()
     }
   }, [])
