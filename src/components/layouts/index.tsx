@@ -41,7 +41,7 @@ const Footer = () => {
 }
 
 /**
- * 9.1 (functional)
+ * 9.1 (components)
  * 9.2 (props/state)
  */ 
 export default ({ children }: { children: React.ReactNode }) => {
