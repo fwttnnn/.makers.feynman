@@ -1,5 +1,6 @@
 import { StrictMode, lazy } from "react"
 import { createRoot } from "react-dom/client"
+import { HelmetProvider, Helmet } from "react-helmet-async"
 import { BrowserRouter, Routes, Route } from "react-router-dom"
 
 /**
@@ -42,29 +43,56 @@ createRoot(document.getElementById("root")!).render(
     <Boundary.Error>
       <Redux.Provider store={Redux.store}>
         <Auth.Provider>
-          <BrowserRouter>
-            <Routes>
-              <Route
-                path={"/"}
-                element={
-                  <Layout>
-                    <Settings />
-                    <Task />
-                  </Layout>
-                }
-              />
-              <Route
-                path={"*"}
-                element={
-                  <Layout>
-                    <p>
-                      Oops! the page you are looking for is not found. <a href="/">Go back!</a>
-                    </p>
-                  </Layout>
-                }
-              />
-            </Routes>
-          </BrowserRouter>
+          <HelmetProvider>
+            <BrowserRouter>
+              <Routes>
+                <Route
+                  path={"/"}
+                  element={
+                    <>
+                      {/**
+                        * 31.4 (SEO)
+                        */}
+                      <Helmet>
+                        <title>task tracker | home</title>
+                        <meta
+                          name="description"
+                          content="a task tracker app "
+                        />
+                      </Helmet>
+
+                      <Layout>
+                        <Settings />
+                        <Task />
+                      </Layout>
+                    </>
+                  }
+                />
+                <Route
+                  path={"*"}
+                  element={
+                    <>
+                      {/**
+                        * 31.4 (SEO)
+                        */}
+                      <Helmet>
+                        <title>task tracker | not found</title>
+                        <meta
+                          name="description"
+                          content="whoops! manage your tasks on the homepage!"
+                        />
+                      </Helmet>
+                      <Layout>
+                        <p>
+                          Oops! the page you are looking for is not found. <a href="/">Go back!</a>
+                        </p>
+                      </Layout>
+                    </>
+                  }
+                />
+              </Routes>
+            </BrowserRouter>
+          </HelmetProvider>
         </Auth.Provider>
       </Redux.Provider>
     </Boundary.Error>

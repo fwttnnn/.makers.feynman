@@ -17,7 +17,7 @@ const Header = () => {
   return (
     <header>
       <div>
-        <span>.makers.feynman (to-do list)</span>
+        <span>.makers.feynman</span>
       </div>
       {/**
         * 12.2 (conditional rendering & lists)
