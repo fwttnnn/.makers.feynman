@@ -16,6 +16,11 @@ export type Store = {
   sortDir: "asc" | "desc"
 
   sort(): void
+
+  /**
+   * NOTE: this is actually not what zustand
+   *       is for, should've been in a `services/` folder
+   */
   add(title: string): Promise<void>
   delete(id: number): Promise<void>
   toggle(id: number): Promise<void>
