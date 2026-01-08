@@ -1,4 +1,4 @@
-import { StrictMode, lazy } from "react"
+import { StrictMode } from "react"
 import { createRoot } from "react-dom/client"
 import { HelmetProvider, Helmet } from "react-helmet-async"
 import { BrowserRouter, Routes, Route } from "react-router-dom"
