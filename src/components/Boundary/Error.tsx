@@ -34,9 +34,16 @@ export default class ErrorBoundary extends React.Component<Props, State> {
     if (this.state.error) {
       return (
         <div>
-          <p>something went wrong</p>
-          <pre>{this.state.error?.message}</pre>
-          <button onClick={() => this.setState({ error: null })}>
+          <p>
+            whoops, something went wrong
+          </p>
+          <pre>
+            {this.state.error?.message}
+          </pre>
+          <button
+            className="underline decoration-wavy"
+            onClick={() => this.setState({ error: null })}
+          >
             try again
           </button>
         </div>

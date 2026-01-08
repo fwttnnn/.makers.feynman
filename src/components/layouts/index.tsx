@@ -3,6 +3,14 @@ import useAuth from "@/hooks/useAuth"
 import Login from "@/components/Auth/Login"
 import Logout from "@/components/Auth/Logout"
 
+import {
+  QueryClient,
+  QueryClientProvider,
+  useQuery,
+} from "@tanstack/react-query"
+
+const queryClient = new QueryClient()
+
 const Header = () => {
   const {user} = useAuth()
 
@@ -17,7 +25,7 @@ const Header = () => {
       {user
         && (
           <div>
-            <span>welcome back {user?.name.first}!</span>
+            <span>welcome back, {user?.name.first}!</span>
           </div>
         )}
       <div>
@@ -33,9 +41,29 @@ const Header = () => {
 }
 
 const Footer = () => {
+  /**
+   * 22.4 (server/async)
+   */
+  const { error, data } = useQuery({
+    queryKey: ["repo"],
+    queryFn: () =>
+      fetch("https://api.github.com/repos/fwttnnn/.makers.feynman").then((res) =>
+        res.json(),
+      ),
+  })
+
+  if (error) return "an error has occurred: " + error.message
+
   return (
-    <footer>
-      {/* © 2026 fattan */}
+    <footer
+      className="border-t py-3 my-4"
+    >
+      <p>
+        about the app: {data?.description}
+      </p>
+      <p>
+        © {(new Date(data?.updated_at)).getFullYear() || ""} {data?.owner.login}
+      </p>
     </footer>
   )
 }
@@ -47,16 +75,18 @@ const Footer = () => {
 export default ({ children }: { children: React.ReactNode }) => {
   return (
     <>
-      <Header />
-      <main
-        className="my-4"
-      >
-        {/**
-         * 17.4 (HOC) ver. modern
-         */}
-        {children}
-      </main>
-      <Footer />
+      <QueryClientProvider client={queryClient}>
+        <Header />
+        <main
+          className="my-4"
+        >
+          {/**
+           * 17.4 (HOC) ver. modern
+           */}
+          {children}
+        </main>
+        <Footer />
+      </QueryClientProvider>
     </>
   )
 }

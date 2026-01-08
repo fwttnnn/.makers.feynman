@@ -1,4 +1,6 @@
-import { createContext, useEffect, useState } from "react"
+import { createContext,
+         useLayoutEffect,
+         useState } from "react"
 
 export type User = {
   id: string,
@@ -24,7 +26,7 @@ export const Provider = ({ children }: {children: React.ReactNode}) => {
   const [err, setErr] = useState<string>("")
   const [user, setUser] = useState<User | null>(null)
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     const data = localStorage.getItem(".makers.feynman/user")
     if (!data) return
 

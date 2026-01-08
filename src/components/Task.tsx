@@ -1,5 +1,5 @@
-import type { Label, Task } from "@/hooks/useTasks"
 import store from "@/stores/zustand"
+import type { Task, Label } from "@/stores/zustand/task"
 
 import useAuth from "@/hooks/useAuth"
 import useRedux from "@/hooks/useRedux"

@@ -1,4 +1,4 @@
-import { StrictMode } from "react"
+import { StrictMode, lazy } from "react"
 import { createRoot } from "react-dom/client"
 import { BrowserRouter, Routes, Route } from "react-router-dom"
 
@@ -19,12 +19,15 @@ const Redux = {
  */
 import "@/main.css"
 
-import Layout from "@/components/Layouts"
-import Task from "@/components/Task"
-import Settings from "@/components/Settings"
-
 import Auth from "@/contexts/Auth"
 import Boundary from "@/components/Boundary"
+
+/**
+ * 17.5 (performance opt.)
+ */
+const Layout   = lazy(() => import("@/components/Layouts"))
+const Task     = lazy(() => import("@/components/Task"))
+const Settings = lazy(() => import("@/components/Settings"))
 
 /**
  * 17.4 (HOC) from React itself.
