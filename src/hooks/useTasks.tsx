@@ -1,3 +1,7 @@
+/**
+ * NOTE: DEPRECATED
+ */
+
 import { useLiveQuery } from "dexie-react-hooks"
 
 import db from "@/database"
