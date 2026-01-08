@@ -269,7 +269,9 @@ export const List = ({ tasks }: { tasks: Array<Task> }) => {
         * 12.2 (conditional rendering & lists)
         */}
       {tasks.map((task: Task) => (
-        <li>
+        <li
+          key={`--list-${task.id}`}
+        >
           <Item
             task={task}
            />

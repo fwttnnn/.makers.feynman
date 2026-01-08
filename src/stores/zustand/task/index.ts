@@ -19,6 +19,11 @@ export type Store = {
   add(title: string): Promise<void>
   delete(id: number): Promise<void>
   toggle(id: number): Promise<void>
+
+  /**
+   * NOTE: in-memory (for testing)
+   */
+  __in_mem_add(title: string): void
 }
 
 /**
@@ -106,5 +111,12 @@ export default create<Store>((set, get) => {
 
       await db.tasks.update(id, { completed: !task.completed })
     },
+
+    __in_mem_add: (title: string) => {
+      const {tasks} = get()
+      set({
+        tasks: [...tasks, { id: 0, title: title, completed: false, labels: [] }]
+      })
+    }
   }
 })

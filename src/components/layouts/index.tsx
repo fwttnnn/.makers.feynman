@@ -52,6 +52,9 @@ const Footer = () => {
       ),
   })
 
+  /**
+   * 12.2 (conditional rendering & lists)
+   */
   if (error) return "an error has occurred: " + error.message
 
   return (
