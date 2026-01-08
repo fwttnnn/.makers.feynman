@@ -26,9 +26,9 @@ import Boundary from "@/components/Boundary"
 /**
  * 17.5 (performance opt.)
  */
-const Layout   = lazy(() => import("@/components/Layouts/index.tsx"))
-const Task     = lazy(() => import("@/components/Task.tsx"))
-const Settings = lazy(() => import("@/components/Settings.tsx"))
+const Layout   = lazy(() => import("./components/Layouts/index.tsx"))
+const Task     = lazy(() => import("./components/Task.tsx"))
+const Settings = lazy(() => import("./components/Settings.tsx"))
 
 /**
  * 17.4 (HOC) from React itself.
