@@ -2,18 +2,19 @@ import db from "@/database"
 import { liveQuery } from "dexie"
 import { create } from "zustand"
 
-import type { Task as DBTask,
+import type { Group as DBGroup,
+              Task as DBTask,
               Label as DBLabel,
               Theme as DBTheme } from "@/database"
 
-export type Task = DBTask & { labels: Array<Label> }
+export type Task = DBGroup & { tasks: Array<DBTask>, labels: Array<Label> }
 export type Label = Pick<DBLabel, "id" | "name"> & { theme: Pick<DBTheme, "bg" | "fg"> }
 
 export type Store = {
   tasks: Task[]
 
   isSorted: boolean,
-  sortDir: "asc" | "desc"
+  sortDir: "asc" | "desc",
 
   sort(): void
 
@@ -23,7 +24,7 @@ export type Store = {
    */
   add(title: string): Promise<void>
   delete(id: number): Promise<void>
-  toggle(id: number): Promise<void>
+  toggle(id: number, completed?: boolean): Promise<void>
 
   /**
    * NOTE: in-memory (for testing)
@@ -37,28 +38,32 @@ export type Store = {
  */
 export default create<Store>((set, get) => {
   liveQuery(async () => {
-    const [tasks, labels, themes] = await Promise.all([
+    const [groups, tasks, labels, themes] = await Promise.all([
+      db.groups.toArray(),
       db.tasks.toArray(),
       db.labels.toArray(),
       db.themes.toArray(),
     ])
 
-    return tasks.map((task: DBTask) => ({
-      ...task,
-      labels: labels
-        .filter((l: DBLabel) => l.taskId === task.id)
-        .map((l) => {
-          const theme = themes.find((t: DBTheme) => t.id === l.themeId)!
-          return {
-            id: l.id,
-            name: l.name,
-            theme: {
-              bg: theme.bg,
-              fg: theme.fg,
-            },
-          }
-        }),
-    }))
+    return groups.map((group: DBGroup) => {
+      return {
+        ...group,
+        tasks: tasks.filter((t) => t.groupId == group.id),
+        labels: labels.filter((l) => l.groupId === group.id)
+          .map((l) => {
+            const theme = themes.find((t) => t.id === l.themeId)!
+
+            return {
+              id: l.id,
+              name: l.name,
+              theme: {
+                bg: theme.bg,
+                fg: theme.fg,
+              },
+            }
+          }),
+      }
+    })
   }).subscribe({
     next: (tasks) => {
       set({ tasks })
@@ -70,7 +75,7 @@ export default create<Store>((set, get) => {
       const { sortDir, isSorted } = get()
       if (isSorted) {
         const sorted = [...tasks].sort((a, b) => {
-          const result = a.title.localeCompare(b.title)
+          const result = a.name.localeCompare(b.name)
           return sortDir === "asc" ? result : -result
         })
 
@@ -90,7 +95,7 @@ export default create<Store>((set, get) => {
       const nextDir = sortDir === "asc" ? "desc" : "asc"
 
       const sorted = [...tasks].sort((a, b) => {
-        const result = a.title.localeCompare(b.title)
+        const result = a.name.localeCompare(b.name)
         return nextDir === "asc" ? result : -result
       })
 
@@ -101,26 +106,27 @@ export default create<Store>((set, get) => {
       })
     },
 
-    add: async (title: string) => {
-      await db.tasks.add({ title,
-                           completed: false })
+    add: async (name: string) => {
+      await db.groups.add({ name,
+                            completed: false })
     },
 
     delete: async (id: number) => {
-      await db.tasks.delete(id)
+      await db.groups.delete(id)
     },
 
-    toggle: async (id: number) => {
+    toggle: async (id: number, completed?: boolean) => {
       const task = await db.tasks.get(id)
       if (!task) return
 
-      await db.tasks.update(id, { completed: !task.completed })
+      const _completed = completed ? completed : !task.completed
+      await db.tasks.update(id, { completed: _completed })
     },
 
-    __in_mem_add: (title: string) => {
+    __in_mem_add: (name: string) => {
       const {tasks} = get()
       set({
-        tasks: [...tasks, { id: 0, title: title, completed: false, labels: [] }]
+        tasks: [...tasks, { id: 0, name: name, completed: false, tasks: [], labels: [] }]
       })
     }
   }

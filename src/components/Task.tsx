@@ -75,7 +75,7 @@ const Toolbar = () => {
    * 26.5 (zustand global state)
    */
   const [state, dispatch] = useReducer(reducer, { menu: "NONE" })
-  const tasks = store.task()
+  const groups = store.task()
 
   return (
     <div>
@@ -110,7 +110,7 @@ const Toolbar = () => {
               title = title.trim()
               if (!title) return
 
-              await tasks.add(title)
+              await groups.add(title)
               form.reset()
             }}
           >
@@ -131,7 +131,7 @@ const Toolbar = () => {
           <>
             <button
               onClick={() => {
-                tasks.sort()
+                groups.sort()
               }}
               className="underline decoration-wavy"
             >
@@ -154,6 +154,8 @@ const Item = ({ task }: { task: Task }) => {
   const {style} = useRedux()
   const root = useRef<HTMLDivElement>(null)
   const buttonsRef = useRef<HTMLDivElement>(null)
+
+  const groups = store.task()
 
   /**
    * 12.1 (lifecycle/hooks)
@@ -198,62 +200,93 @@ const Item = ({ task }: { task: Task }) => {
      * 26.4 (tailwind)
      * 9.3 (event handling)
      */
-    <div
-      ref={root}
-      onMouseEnter={onEnter}
-      onMouseLeave={onLeave}
-      className="relative py-1.5 my-2 flex items-center justify-between gap-2"
-    >
+    <div className="py-1 my-1">
       <div
-        className="flex gap-2"
-      >
-        <div>
-          <span>{task.title}</span>
-        </div>
-      </div>
-      <div
-        className="flex gap-2"
+        ref={root}
+        onMouseEnter={onEnter}
+        onMouseLeave={onLeave}
+        className="relative flex items-center justify-between gap-2"
       >
         <div
-          className="flex gap-2 mx-1"
+          className="flex gap-2"
         >
-          {/**
+          <div>
+            <span
+                className={`${task.tasks.every((t) => t.completed)
+                              && "text-neutral-400 line-through"}`}
+            >
+              {task.name}
+            </span>
+          </div>
+        </div>
+        <div
+          className="flex gap-2"
+        >
+          <div
+            className="flex gap-2 mx-1"
+          >
+            {/**
             * 12.2 (conditional rendering & lists)
             */}
-          {task.labels.map((label: Label) => (
-            <div key={`--label-${label.id}`}>
-              <span
-                title={label.name}
-                /**
-                 * 12.5 (pure css)
-                 */
-                style={{
-                  background: label.theme.bg,
-                  color: label.theme.fg,
-                  ...styles[style],
-                }}
-                className="rounded-full px-2 py-1"
-              >
-                {label.name[0].toUpperCase()}
-              </span>
-            </div>
-          ))}
+            {task.labels.map((label: Label) => (
+              <div key={`--label-${label.id}`}>
+                <span
+                  title={label.name}
+                  /**
+                   * 12.5 (pure css)
+                   */
+                  style={{
+                    background: label.theme.bg,
+                    color: label.theme.fg,
+                    ...styles[style],
+                  }}
+                  className="rounded-full px-2 py-1"
+                >
+                  {label.name[0].toUpperCase()}
+                </span>
+              </div>
+            ))}
+          </div>
+        </div>
+        <div
+          className="absolute -right-3 flex gap-3"
+          ref={buttonsRef}
+        >
+          <button
+            onClick={async () => {
+              await db.groups.delete(task.id!)
+            }}
+          >
+            <FiTrash />
+          </button>
+          <button>
+            <FiEdit2 />
+          </button>
         </div>
       </div>
-      <div
-        className="absolute -right-3 flex gap-3"
-        ref={buttonsRef}
-      >
-        <button
-          onClick={async () => {
-            await db.tasks.delete(task.id!!)
-          }}
-        >
-          <FiTrash />
-        </button>
-        <button>
-          <FiEdit2 />
-        </button>
+      <div className="ml-5">
+        {task.tasks.map((t) => (
+          <div key={`--task-${t.name}`}>
+            <label htmlFor="vehicle1">
+              <input
+                type="checkbox"
+                checked={t.completed}
+                name={`--checkbox-${t.name}`}
+                className="rounded-none mr-2"
+                onChange={(e) => {
+                  const checked = e.currentTarget.checked
+                  groups.toggle(t.id!, checked)
+                }}
+              />
+              <span
+                className={`${t.completed
+                              && "text-neutral-400 line-through"}`}
+              >
+                {t.name}
+              </span>
+            </label>
+          </div>
+        ))}
       </div>
     </div>
   )

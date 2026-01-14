@@ -65,7 +65,7 @@ const Footer = () => {
         about the app: {data?.description}
       </p>
       <p>
-        © {(new Date(data?.updated_at)).getFullYear() || ""} {data?.owner.login}
+        © {(new Date(data?.updated_at)).getFullYear() || ""} {data?.owner?.login}
       </p>
     </footer>
   )
