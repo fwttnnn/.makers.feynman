@@ -23,6 +23,8 @@ export default () => {
   const tasks = store.task((s) => s.tasks)
   const {user} = useAuth()
 
+  console.log(tasks)
+
   /**
    * 12.2 (conditional rendering & lists)
    */
@@ -75,7 +77,7 @@ const Toolbar = () => {
    * 26.5 (zustand global state)
    */
   const [state, dispatch] = useReducer(reducer, { menu: "NONE" })
-  const groups = store.task()
+  const tasks = store.task()
 
   return (
     <div>
@@ -110,7 +112,7 @@ const Toolbar = () => {
               title = title.trim()
               if (!title) return
 
-              await groups.add(title)
+              await tasks.add(title)
               form.reset()
             }}
           >
@@ -131,7 +133,7 @@ const Toolbar = () => {
           <>
             <button
               onClick={() => {
-                groups.sort()
+                tasks.sort()
               }}
               className="underline decoration-wavy"
             >
@@ -155,7 +157,7 @@ const Item = ({ task }: { task: Task }) => {
   const root = useRef<HTMLDivElement>(null)
   const buttonsRef = useRef<HTMLDivElement>(null)
 
-  const groups = store.task()
+  const tasks = store.task()
 
   /**
    * 12.1 (lifecycle/hooks)
@@ -212,7 +214,7 @@ const Item = ({ task }: { task: Task }) => {
         >
           <div>
             <span
-                className={`${task.tasks.every((t) => t.completed)
+                className={`${task.steps.every((t) => t.completed)
                               && "text-neutral-400 line-through"}`}
             >
               {task.name}
@@ -254,7 +256,7 @@ const Item = ({ task }: { task: Task }) => {
         >
           <button
             onClick={async () => {
-              await db.groups.delete(task.id!)
+              await db.tasks.delete(task.id!)
             }}
           >
             <FiTrash />
@@ -265,7 +267,7 @@ const Item = ({ task }: { task: Task }) => {
         </div>
       </div>
       <div className="ml-5">
-        {task.tasks.map((t) => (
+        {task.steps.map((t) => (
           <div key={`--task-${t.name}`}>
             <label htmlFor="vehicle1">
               <input
@@ -275,7 +277,7 @@ const Item = ({ task }: { task: Task }) => {
                 className="rounded-none mr-2"
                 onChange={(e) => {
                   const checked = e.currentTarget.checked
-                  groups.toggle(t.id!, checked)
+                  tasks.toggle(t.id!, checked)
                 }}
               />
               <span

@@ -2,12 +2,12 @@ import db from "@/database"
 import { liveQuery } from "dexie"
 import { create } from "zustand"
 
-import type { Group as DBGroup,
-              Task as DBTask,
+import type { Task as DBTask,
+              Step as DBStep,
               Label as DBLabel,
               Theme as DBTheme } from "@/database"
 
-export type Task = DBGroup & { tasks: Array<DBTask>, labels: Array<Label> }
+export type Task = DBTask & { steps: Array<DBStep>, labels: Array<Label> }
 export type Label = Pick<DBLabel, "id" | "name"> & { theme: Pick<DBTheme, "bg" | "fg"> }
 
 export type Store = {
@@ -38,18 +38,18 @@ export type Store = {
  */
 export default create<Store>((set, get) => {
   liveQuery(async () => {
-    const [groups, tasks, labels, themes] = await Promise.all([
-      db.groups.toArray(),
+    const [tasks, steps, labels, themes] = await Promise.all([
       db.tasks.toArray(),
+      db.steps.toArray(),
       db.labels.toArray(),
       db.themes.toArray(),
     ])
 
-    return groups.map((group: DBGroup) => {
+    return tasks.map((task: DBTask) => {
       return {
-        ...group,
-        tasks: tasks.filter((t) => t.groupId == group.id),
-        labels: labels.filter((l) => l.groupId === group.id)
+        ...task,
+        steps: steps.filter((s) => s.taskId === task.id),
+        labels: labels.filter((l) => l.taskId === task.id)
           .map((l) => {
             const theme = themes.find((t) => t.id === l.themeId)!
 
@@ -107,26 +107,25 @@ export default create<Store>((set, get) => {
     },
 
     add: async (name: string) => {
-      await db.groups.add({ name,
-                            completed: false })
+      await db.tasks.add({ name })
     },
 
     delete: async (id: number) => {
-      await db.groups.delete(id)
+      await db.tasks.delete(id)
     },
 
     toggle: async (id: number, completed?: boolean) => {
-      const task = await db.tasks.get(id)
-      if (!task) return
+      const step = await db.steps.get(id)
+      if (!step) return
 
-      const _completed = completed ? completed : !task.completed
-      await db.tasks.update(id, { completed: _completed })
+      const _completed = completed ? completed : !step.completed
+      await db.steps.update(id, { completed: _completed })
     },
 
     __in_mem_add: (name: string) => {
       const {tasks} = get()
       set({
-        tasks: [...tasks, { id: 0, name: name, completed: false, tasks: [], labels: [] }]
+        tasks: [...tasks, { id: 0, name: name, steps: [], labels: [] }]
       })
     }
   }
